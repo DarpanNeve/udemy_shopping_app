@@ -18,7 +18,7 @@ final groceryItems = [
       category: categories[Categories.fruit]!),
   GroceryItem(
       id: 'c',
-      name: 'Beef Steak',
+      name: 'Onions',
       quantity: 1,
       category: categories[Categories.meat]!),
 ];

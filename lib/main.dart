@@ -18,20 +18,21 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Groceries',
       darkTheme: ThemeData.dark().copyWith(
         colorScheme: kDarkColorScheme,
-        appBarTheme: ThemeData().appBarTheme.copyWith(
+        appBarTheme: ThemeData.dark().appBarTheme.copyWith(
           foregroundColor: kDarkColorScheme.onPrimaryContainer,
           backgroundColor: kDarkColorScheme.primaryContainer,
         ),
-        cardTheme: ThemeData().cardTheme.copyWith(
+        cardTheme: ThemeData.dark().cardTheme.copyWith(
           color: kDarkColorScheme.secondaryContainer,
           margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
         ),
-        textTheme: ThemeData().textTheme.copyWith(
+        textTheme: ThemeData.dark().textTheme.copyWith(
           titleLarge: TextStyle(
               fontWeight: FontWeight.normal,
-              color: kColorScheme.onSecondaryContainer,
-              fontSize: 24),
+              color: kDarkColorScheme.onSecondaryContainer,
+              ),
         ),
+
       ),
       theme: ThemeData().copyWith(
         colorScheme: kColorScheme,
@@ -46,8 +47,7 @@ class MyApp extends StatelessWidget {
         textTheme: ThemeData().textTheme.copyWith(
           titleLarge: TextStyle(
               fontWeight: FontWeight.normal,
-              color: kColorScheme.onSecondaryContainer,
-              fontSize: 24),
+              color: kColorScheme.onSecondaryContainer,),
         ),
       ),
       themeMode: ThemeMode.system,
