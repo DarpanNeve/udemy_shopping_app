@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:udemy_shopping_app/models/grocery_item.dart';
 import 'package:udemy_shopping_app/widget/grocery_list.dart';
-import 'package:udemy_shopping_app/widget/new_item.dart';
 
 import 'Theme/theme.dart';
-import 'data/dummy_items.dart';
 
 void main() {
   runApp(const MyApp());

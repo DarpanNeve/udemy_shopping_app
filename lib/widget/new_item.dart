@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:udemy_shopping_app/data/categories.dart';
 import 'package:udemy_shopping_app/models/category.dart';
-import 'package:udemy_shopping_app/models/grocery_item.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -16,19 +18,25 @@ class _NewItemState extends State<NewItem> {
   var _quantity = 1;
   var _category = categories[Categories.vegetables]!;
   var _note = '';
+  final url = Uri.https(
+      'udem-88794-default-rtdb.europe-west1.firebasedatabase.app',
+      'shopping-list.json');
 
-  void _saveForm() {
+  void _saveForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Navigator.of(context).pop(
-        GroceryItem(
-          id: DateTime.now().toString(),
-          name: _name,
-          quantity: _quantity,
-          category: _category,
-          note: _note,
-        ),
-      );
+      final response = await http.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'ID': DateTime.now().toString(),
+            'name': _name,
+            'quantity': _quantity,
+            'category': _category.name,
+            'note': _note,
+          }));
+      if (response.statusCode == 200 && context.mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
@@ -100,7 +108,7 @@ class _NewItemState extends State<NewItem> {
                   ],
                   onChanged: (value) {
                     setState(
-                      () {
+                          () {
                         _category = value as Category;
                       },
                     );
@@ -136,7 +144,7 @@ class _NewItemState extends State<NewItem> {
                         _formKey.currentState!.reset();
                       },
                       style:
-                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      ElevatedButton.styleFrom(backgroundColor: Colors.red),
                       child: const Text('Reset'),
                     ),
                   ],
