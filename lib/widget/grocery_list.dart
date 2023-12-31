@@ -17,12 +17,26 @@ class GroceryList extends StatefulWidget {
 class _GroceryListState extends State<GroceryList> {
   final List<GroceryItem> groceryItems = [];
   var _isLoading = true;
-  String error='No Items';
+  String error = 'No Items';
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _loadData();
+  }
+
+  void _deleteData(GroceryItem item) async{
+    try {
+      final url = Uri.https(
+          'udem-88794-default-rtdb.europe-west1.firebasedatabase.app',
+          'shopping-list/${item.id}.json');
+      final response=await http.delete(url);
+    } catch (e) {
+      setState(() {
+        groceryItems.add(item);
+      });
+    }
   }
 
   _loadData() async {
@@ -31,10 +45,12 @@ class _GroceryListState extends State<GroceryList> {
         'shopping-list.json');
     final response = await http.get(url);
     print('the response body is  ${response.body}');
-    if (response.body.isEmpty || response.statusCode != 200 || response.body == null) {
+    if (response.body.isEmpty ||
+        response.statusCode != 200 ||
+        response.body == null) {
       setState(() {
         _isLoading = false;
-        error="Fail to Fetch";
+        error = "Fail to Fetch";
       });
       return;
     }
@@ -100,8 +116,9 @@ class _GroceryListState extends State<GroceryList> {
               setState(() {
                 groceryItems.removeAt(index);
               });
-            },
+              _deleteData(item);
 
+            },
             child: ListTile(
               leading: ExcludeSemantics(
                 child: CircleAvatar(
