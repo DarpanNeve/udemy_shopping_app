@@ -7,8 +7,10 @@ class GroceryItem{
   final String name;
   final int quantity;
   final Category category;
+  final String note;
 
   const GroceryItem({
+    required this.note,
     required this.id,
     required this.name,
     required this.quantity,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:udemy_shopping_app/models/grocery_item.dart';
 import 'package:udemy_shopping_app/widget/grocery_list.dart';
 import 'package:udemy_shopping_app/widget/new_item.dart';
 
 import 'Theme/theme.dart';
+import 'data/dummy_items.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,32 +53,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.system,
-      home: const HomePage(),
+      home: const GroceryList(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Flutter Groceries'), actions: [
-        IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const NewItem(),
-              ),
-            );
-          },
-        ),
-      ]),
-      body: const Center(
-        child: GroceriesList(),
-      ),
-    );
-  }
-}

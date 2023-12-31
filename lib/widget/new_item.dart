@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:udemy_shopping_app/data/categories.dart';
+import 'package:udemy_shopping_app/models/category.dart';
+import 'package:udemy_shopping_app/models/grocery_item.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -9,6 +11,27 @@ class NewItem extends StatefulWidget {
 }
 
 class _NewItemState extends State<NewItem> {
+  final _formKey = GlobalKey<FormState>();
+  var _name = '';
+  var _quantity = 1;
+  var _category = categories[Categories.vegetables]!;
+  var _note = '';
+
+  void _saveForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      Navigator.of(context).pop(
+        GroceryItem(
+          id: DateTime.now().toString(),
+          name: _name,
+          quantity: _quantity,
+          category: _category,
+          note: _note,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,19 +41,45 @@ class _NewItemState extends State<NewItem> {
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: Form(
+            key: _formKey,
             child: Column(
               children: [
                 TextFormField(
                   autofocus: true,
                   decoration: const InputDecoration(labelText: 'Name'),
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        value.trim().length <= 2 ||
+                        value.trim().length >= 50) {
+                      return 'Please enter a name';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _name = value!;
+                  },
                 ),
                 TextFormField(
                   keyboardType: TextInputType.number,
                   initialValue: '1',
                   autofocus: true,
                   decoration: const InputDecoration(labelText: 'Quantity'),
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        int.tryParse(value) == null ||
+                        int.tryParse(value)! <= 0) {
+                      return 'Please enter a quantity';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _quantity = int.parse(value!);
+                  },
                 ),
                 DropdownButtonFormField(
+                  value: _category,
                   decoration: const InputDecoration(labelText: 'Category'),
                   items: [
                     for (final item in categories.entries)
@@ -49,23 +98,43 @@ class _NewItemState extends State<NewItem> {
                         ),
                       ),
                   ],
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(
+                      () {
+                        _category = value as Category;
+                      },
+                    );
+                  },
                 ),
                 TextFormField(
                   autofocus: true,
                   maxLength: 50,
                   decoration: const InputDecoration(labelText: 'Note'),
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        value.trim().length <= 2 ||
+                        value.trim().length >= 50) {
+                      return 'Please enter a note';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _note = value!;
+                  },
                 ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _saveForm,
                       child: const Text('Add'),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _formKey.currentState!.reset();
+                      },
                       style:
                           ElevatedButton.styleFrom(backgroundColor: Colors.red),
                       child: const Text('Reset'),
