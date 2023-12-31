@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:udemy_shopping_app/data/categories.dart';
 import 'package:udemy_shopping_app/models/category.dart';
 
+import '../models/grocery_item.dart';
+
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
 
@@ -21,10 +23,14 @@ class _NewItemState extends State<NewItem> {
   final url = Uri.https(
       'udem-88794-default-rtdb.europe-west1.firebasedatabase.app',
       'shopping-list.json');
+  var _isSending = false;
 
   void _saveForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      setState(() {
+        _isSending = true;
+      });
       final response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
           body: json.encode({
@@ -34,8 +40,18 @@ class _NewItemState extends State<NewItem> {
             'category': _category.name,
             'note': _note,
           }));
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      print(response.body);
       if (response.statusCode == 200 && context.mounted) {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(
+          GroceryItem(
+            id: responseData['name'],
+            name: _name,
+            quantity: _quantity,
+            category: _category,
+            note: _note,
+          ),
+        );
       }
     }
   }
@@ -136,15 +152,19 @@ class _NewItemState extends State<NewItem> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: _saveForm,
-                      child: const Text('Add'),
+                      onPressed: _isSending ? null : _saveForm,
+                      child: _isSending
+                          ? const Text("Sending...")
+                          : const Text('Add'),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        _formKey.currentState!.reset();
-                      },
+                      onPressed: _isSending
+                          ? null
+                          : () {
+                              _formKey.currentState!.reset();
+                            },
                       style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
                       child: const Text('Reset'),
                     ),
                   ],
